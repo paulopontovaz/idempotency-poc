@@ -16,6 +16,60 @@ services:
         networks:
             - back-tier
 
+    server:
+        build:
+            context: server/
+            dockerfile: Dockerfile.${NODE_ENV:-dev}
+        volumes:
+            - ./server:/server
+        ports:
+            - 9000:9000
+        environment:
+            - DB_USER=${DB_USER}
+            - DB_PASS=${DB_PASS}
+            - DB_NAME=${DB_NAME}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - API_PORT=${API_PORT}
+            - DRIZZLE_SSL=${DRIZZLE_SSL}
+        networks:
+            - back-tier
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    client:
+        build:
+            context: client/
+            dockerfile: Dockerfile.${NODE_ENV:-dev}
+        volumes:
+            - ./client/src:/client/src
+            - ./client/vite.config.ts:/client/vite.config.ts
+        ports:
+            - 3000:3000
+        environment:
+            - VITE_API_BASE_URL=/api
+        networks:
+            - back-tier
+        links:
+            - server
+
+    proxy:
+        image: nginx:stable-alpine
+        ports:
+            - 8080:8080
+        volumes:
+            - ./nginx.conf:/etc/nginx/nginx.conf
+        networks:
+            - front-tier
+            - back-tier
+        links:
+            - client
+            - server
+        depends_on:
+            - client
+            - server
+
 networks:
     front-tier:
         attachable: true

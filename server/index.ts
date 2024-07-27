@@ -1,4 +1,4 @@
-import { server } from "@/server/api";
+import { server } from "./api";
 
 console.log(`Server started listening on ${process.env.API_PORT}`);
 Bun.serve({
