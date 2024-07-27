@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
-import ky from "ky";
 import type {
     Person,
     PersonUpdate,
 } from "../../../../server/db/models/personsModel";
-import { PERSONS_API_URL } from "./_common";
+import { PERSONS_API_URL, api } from "./_common";
 
 type EditPersonResponse = {
     person: Person;
@@ -13,7 +12,7 @@ type EditPersonResponse = {
 export const editPersonRequest = async (
     person: PersonUpdate,
 ): Promise<EditPersonResponse> =>
-    (await ky
+    (await api
         .patch(`${PERSONS_API_URL}/${person.id}`, {
             json: person,
         })

@@ -1,8 +1,7 @@
 import { signal } from "@preact/signals-react";
-import ky from "ky";
 import { useEffect } from "react";
 import type { Person } from "../../../../server/db/models/personsModel";
-import { PERSONS_API_URL } from "./_common";
+import { PERSONS_API_URL, api } from "./_common";
 
 const persons = signal<Person[]>([]);
 
@@ -11,7 +10,7 @@ type FetchPersonsResponse = {
 };
 
 export const fetchAllPersonsRequest = async (): Promise<FetchPersonsResponse> =>
-    (await ky
+    (await api
         .get(PERSONS_API_URL, { retry: 0 })
         .json()) as FetchPersonsResponse;
 
