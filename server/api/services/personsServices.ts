@@ -1,10 +1,12 @@
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "../../db";
 import { Persons } from "../../db/models";
 import type { PersonInsert, PersonUpdate } from "../../db/models/personsModel";
 
 export const getAllPersonsService = async () =>
-    await db.query.Persons.findMany();
+    await db.query.Persons.findMany({
+        orderBy: asc(Persons.id),
+    });
 
 export const getPersonService = async (id: number) =>
     await db.query.Persons.findFirst({
