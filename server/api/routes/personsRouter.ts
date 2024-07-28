@@ -33,6 +33,7 @@ personsRouter.post("/", async (c) => {
     try {
         const newPersonProperties = await c.req.json();
         const newPerson = await insertPersonService(newPersonProperties);
+        console.log("##### personsRouter called POST", { newPerson });
         return c.json({ newPerson }, 201);
     } catch (error) {
         c.json({ error: "Error while inserting new person." }, 500);
