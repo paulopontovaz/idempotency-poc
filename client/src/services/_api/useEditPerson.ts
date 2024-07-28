@@ -1,9 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type {
     Person,
     PersonUpdate,
 } from "../../../../server/db/models/personsModel";
 import { PERSONS_API_URL, api } from "./_common";
+import { getPersonsQueryKey } from "./useGetAllPersons";
 
 type EditPersonResponse = {
     person: Person;
@@ -19,8 +20,15 @@ export const editPersonRequest = async (
         .json()) as EditPersonResponse;
 
 export const useEditPerson = () => {
+    const queryClient = useQueryClient();
     const { mutateAsync: editPerson } = useMutation({
         mutationFn: editPersonRequest,
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: getPersonsQueryKey(),
+                refetchType: "active",
+            });
+        },
     });
 
     return { editPerson };
