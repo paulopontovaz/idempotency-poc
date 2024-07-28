@@ -16,6 +16,15 @@ services:
         networks:
             - back-tier
 
+    redis:
+        image: redis:alpine
+        ports:
+            - 6379:6379
+        volumes:
+            - ./server/redis:/data
+        networks:
+            - back-tier
+
     server:
         build:
             context: server/
