@@ -1,15 +1,26 @@
-import { useGetAllPersons } from "./services";
+import { HStack, List, ListItem, Text } from "@chakra-ui/react";
+import type { Person } from "../../server/db/models/personsModel";
 
-function PersonList() {
-    const { persons } = useGetAllPersons();
+type PersonListProps = {
+    persons: Person[];
+};
 
-    console.log("rendered");
+function PersonList(props: PersonListProps) {
+    const { persons } = props;
 
-    return persons.map((person) => (
-        <li key={person.id}>
-            {person.name} ({person.age ?? "-"})
-        </li>
-    ));
+    return (
+        <List>
+            {persons.map((person) => (
+                <ListItem key={person.id}>
+                    <HStack>
+                        <Text>
+                            {person.name} ({person.age ?? "-"})
+                        </Text>
+                    </HStack>
+                </ListItem>
+            ))}
+        </List>
+    );
 }
 
 export { PersonList };

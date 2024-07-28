@@ -1,5 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
-import type { Person } from "../../../../server/db/models/personsModel";
+import type {
+    Person,
+    PersonInsert,
+} from "../../../../server/db/models/personsModel";
 import { PERSONS_API_URL, api } from "./_common";
 
 type AddPersonResponse = {
@@ -7,11 +10,11 @@ type AddPersonResponse = {
 };
 
 export const addPersonRequest = async (
-    description: string,
+    person: PersonInsert,
 ): Promise<AddPersonResponse> =>
     (await api
         .post(PERSONS_API_URL, {
-            json: description,
+            json: person,
         })
         .json()) as AddPersonResponse;
 
