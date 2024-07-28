@@ -1,5 +1,4 @@
 import ky from "ky";
-import { v4 as uuidv4 } from "uuid";
 
 const BASE_API_URL =
     process.env.NODE_ENV === "dev"
@@ -8,13 +7,4 @@ const BASE_API_URL =
 
 export const PERSONS_API_URL = `${BASE_API_URL}/persons`;
 
-export const api = ky.extend({
-    hooks: {
-        beforeRequest: [
-            (request) => {
-                request.headers.set("Idempotency-Key", uuidv4());
-            },
-        ],
-    },
-    retry: 0,
-});
+export const api = ky.extend({ retry: 0 });
