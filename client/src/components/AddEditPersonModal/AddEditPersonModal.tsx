@@ -34,7 +34,7 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
 
     const { addPerson } = useAddPerson();
     const { editPerson } = useEditPerson();
-    const { register, handleSubmit } = useForm({
+    const { register, handleSubmit, reset } = useForm({
         resolver: yupResolver(schema),
         values: {
             name: person?.name ?? "",
@@ -64,7 +64,13 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal
+            isOpen={isOpen}
+            onClose={() => {
+                reset();
+                onClose();
+            }}
+        >
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>Add New Person</ModalHeader>
