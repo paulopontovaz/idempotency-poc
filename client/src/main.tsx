@@ -10,7 +10,16 @@ const theme = extendTheme({
     },
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        mutations: {
+            retry: 0,
+        },
+        queries: {
+            retry: 0,
+        },
+    },
+});
 
 // biome-ignore lint/style/noNonNullAssertion: this element will always be defined.
 ReactDOM.createRoot(document.getElementById("root")!).render(
