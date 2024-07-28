@@ -15,8 +15,8 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import type { Person } from "../../server/db/models/personsModel";
-import { useAddPerson, useEditPerson } from "./services";
+import type { Person } from "../../../../server/db/models/personsModel";
+import { useAddPerson, useEditPerson } from "../../services";
 
 const schema = yup.object({
     name: yup.string().required(),
@@ -26,44 +26,41 @@ const schema = yup.object({
 type AddEditPersonModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    person?: Person | null;
+    person: Person | null;
 };
 
 export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
     const { isOpen, onClose, person } = props;
 
-    const { register, handleSubmit, reset } = useForm({
-        resolver: yupResolver(schema),
-        defaultValues: {
-            name: person?.name ?? "",
-            age: person?.age ?? null,
-        },
-    });
     const { addPerson } = useAddPerson();
     const { editPerson } = useEditPerson();
+    const { register, handleSubmit } = useForm({
+        resolver: yupResolver(schema),
+        values: {
+            name: person?.name ?? "",
+            age: person?.age,
+        },
+    });
 
     const onSubmit: SubmitHandler<yup.InferType<typeof schema>> = async (
         data,
     ) => {
         try {
-            if (person) {
-                await editPerson({
-                    id: person.id,
-                    name: data.name,
-                    age: data.age,
-                });
-            } else {
-                await addPerson({
-                    name: data.name,
-                    age: data.age,
-                });
-            }
+            person
+                ? await editPerson({ ...data, id: person.id })
+                : await addPerson(data);
         } catch (error) {
             console.error(error);
         }
 
-        reset();
-        onClose();
+        /*
+            Commenting the following lines in order
+            to prevent the modal from being closed automatically.
+            This way, we can execute the same request multiple times
+            and test the idempotency functionality.
+        */
+        // reset();
+        // onClose();
     };
 
     return (
@@ -79,30 +76,34 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
                     >
                         <VStack spacing={4}>
                             <FormControl>
-                                <FormLabel>Name</FormLabel>
+                                <FormLabel>Name*</FormLabel>
                                 <Input
                                     placeholder="John Doe"
-                                    {...register("name")}
+                                    {...register("name", {
+                                        value: person?.name ?? undefined,
+                                    })}
                                 />
                             </FormControl>
                             <FormControl>
                                 <FormLabel>Age</FormLabel>
-                                <Input placeholder="42" {...register("age")} />
+                                <Input
+                                    placeholder="42"
+                                    {...register("age", {
+                                        value: person?.age ?? undefined,
+                                    })}
+                                />
                             </FormControl>
                         </VStack>
                     </form>
                 </ModalBody>
 
                 <ModalFooter>
-                    <Button variant="ghost" mr={3} onClick={onClose}>
-                        Close
-                    </Button>
                     <Button
                         colorScheme="blue"
                         type="submit"
                         form="add-person-form"
                     >
-                        {person ? "Save New Person" : "Save Changes"}
+                        {person ? "Save Changes" : "Save New Person"}
                     </Button>
                 </ModalFooter>
             </ModalContent>
