@@ -17,11 +17,11 @@ export const fetchAllPersonsRequest = async () => {
 export const getPersonsQueryKey = () => ["persons"];
 
 export const useGetAllPersons = () => {
-    const { data, refetch } = useQuery({
+    const { data } = useQuery({
         queryKey: getPersonsQueryKey(),
         queryFn: fetchAllPersonsRequest,
         retry: 0,
     });
 
-    return { persons: data ?? [], getAllPersons: refetch };
+    return { persons: data ?? [] };
 };
