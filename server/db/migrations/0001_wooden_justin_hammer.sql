@@ -1,0 +1,1 @@
+ALTER TABLE "persons" ALTER COLUMN "age" SET DATA TYPE integer;
