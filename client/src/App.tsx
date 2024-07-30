@@ -1,5 +1,5 @@
 import { Heading, VStack } from "@chakra-ui/react";
-import { PersonList } from "./components/PersonList/PersonList";
+import { PaymentList } from "./components/PaymentList/PaymentList";
 
 function App() {
     return (
@@ -8,7 +8,7 @@ function App() {
                 Idempotency PoC
             </Heading>
 
-            <PersonList />
+            <PaymentList />
         </VStack>
     );
 }

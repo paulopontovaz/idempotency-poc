@@ -1,1 +1,1 @@
-export { personsRouter } from "./personsRouter";
+export { paymentsRouter } from "./paymentsRouter";

@@ -1,1 +1,1 @@
-export { Persons } from "./personsModel";
+export { Payments } from "./paymentsModel";

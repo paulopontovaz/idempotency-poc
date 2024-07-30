@@ -1,0 +1,19 @@
+{
+    "[javascript][typescript][typescriptreact][json][jsonc][html][dockercompose]": {
+        "editor.defaultFormatter": "biomejs.biome",
+    },
+    "[json][jsonc][html][dockercompose]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+    }
+  },
+  "[javascript][typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+      "source.addMissingImports": "explicit",
+      "source.removeUnusedImports": "explicit",
+      "source.fixAll": "explicit",
+      "source.sortImports": "explicit"
+    }
+  },
+}

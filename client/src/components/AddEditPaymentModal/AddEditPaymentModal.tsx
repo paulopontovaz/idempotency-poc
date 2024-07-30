@@ -15,30 +15,28 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import * as yup from "yup";
-import type { Person } from "../../../../server/db/models/personsModel";
-import { useAddPerson, useEditPerson } from "../../services";
+import type { Payment } from "../../../../server/db/models/paymentsModel";
+import { useAddPayment, useEditPayment } from "../../services";
 
 const schema = yup.object({
-    name: yup.string().required(),
-    age: yup.number().positive().integer().nullable(),
+    description: yup.string().required(),
 });
 
-type AddEditPersonModalProps = {
+type AddEditPaymentModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    person: Person | null;
+    payment: Payment | null;
 };
 
-export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
-    const { isOpen, onClose, person } = props;
+export const AddEditPaymentModal = (props: AddEditPaymentModalProps) => {
+    const { isOpen, onClose, payment } = props;
 
-    const { addPerson } = useAddPerson();
-    const { editPerson } = useEditPerson();
+    const { addPayment } = useAddPayment();
+    const { editPayment } = useEditPayment();
     const { register, handleSubmit, reset } = useForm({
         resolver: yupResolver(schema),
         values: {
-            name: person?.name ?? "",
-            age: person?.age,
+            description: payment?.description ?? "",
         },
     });
 
@@ -46,9 +44,9 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
         data,
     ) => {
         try {
-            person
-                ? await editPerson({ ...data, id: person.id })
-                : await addPerson(data);
+            payment
+                ? await editPayment({ ...data, id: payment.id })
+                : await addPayment(data);
         } catch (error) {
             console.error(error);
         }
@@ -73,29 +71,21 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
         >
             <ModalOverlay />
             <ModalContent>
-                <ModalHeader>Add New Person</ModalHeader>
+                <ModalHeader>Add New Payment</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <form
-                        id="add-person-form"
+                        id="add-payment-form"
                         onSubmit={handleSubmit(onSubmit)}
                     >
                         <VStack spacing={4}>
                             <FormControl>
-                                <FormLabel>Name*</FormLabel>
+                                <FormLabel>Description*</FormLabel>
                                 <Input
-                                    placeholder="John Doe"
-                                    {...register("name", {
-                                        value: person?.name ?? undefined,
-                                    })}
-                                />
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel>Age</FormLabel>
-                                <Input
-                                    placeholder="42"
-                                    {...register("age", {
-                                        value: person?.age ?? undefined,
+                                    placeholder="Gaming laptop"
+                                    {...register("description", {
+                                        value:
+                                            payment?.description ?? undefined,
                                     })}
                                 />
                             </FormControl>
@@ -107,9 +97,9 @@ export const AddEditPersonModal = (props: AddEditPersonModalProps) => {
                     <Button
                         colorScheme="blue"
                         type="submit"
-                        form="add-person-form"
+                        form="add-payment-form"
                     >
-                        {person ? "Save Changes" : "Save New Person"}
+                        {payment ? "Save Changes" : "Save New Payment"}
                     </Button>
                 </ModalFooter>
             </ModalContent>

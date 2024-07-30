@@ -1,4 +1,4 @@
-export { useAddPerson } from "./useAddPerson";
-export { useDeletePerson } from "./useDeletePerson";
-export { useEditPerson } from "./useEditPerson";
-export { useGetAllPersons } from "./useGetAllPersons";
+export { useAddPayment } from "./useAddPayment";
+export { useDeletePayment } from "./useDeletePayment";
+export { useEditPayment } from "./useEditPayment";
+export { useGetAllPayments } from "./useGetAllPayments";
