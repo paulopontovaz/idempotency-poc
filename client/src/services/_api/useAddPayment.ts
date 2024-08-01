@@ -11,18 +11,15 @@ type AddPaymentResponse = { payment: Payment };
 
 export const addPaymentRequest =
     (getIdempotencyKeyFunction: (body: unknown) => string) =>
-    async (payment: PaymentInsert): Promise<AddPaymentResponse> => {
-        const idempotencyKey = getIdempotencyKeyFunction(payment);
-
-        return (await api
+    async (payment: PaymentInsert): Promise<AddPaymentResponse> =>
+        (await api
             .post(PAYMENTS_API_URL, {
                 json: payment,
                 headers: {
-                    "Idempotency-Key": idempotencyKey,
+                    "Idempotency-Key": getIdempotencyKeyFunction(payment),
                 },
             })
             .json()) as AddPaymentResponse;
-    };
 
 export const useAddPayment = () => {
     const { getIdempotencyKey } = useIdempotencyKey();
