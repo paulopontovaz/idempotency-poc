@@ -2,6 +2,7 @@ import {
     Button,
     FormControl,
     FormLabel,
+    HStack,
     Input,
     Modal,
     ModalBody,
@@ -10,7 +11,6 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    VStack,
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { type SubmitHandler, useForm } from "react-hook-form";
@@ -20,6 +20,7 @@ import { useAddPayment, useEditPayment } from "../../services";
 
 const schema = yup.object({
     description: yup.string().required(),
+    amount: yup.number().required(),
 });
 
 type AddEditPaymentModalProps = {
@@ -36,7 +37,8 @@ export const AddEditPaymentModal = (props: AddEditPaymentModalProps) => {
     const { register, handleSubmit, reset } = useForm({
         resolver: yupResolver(schema),
         values: {
-            description: payment?.description ?? "",
+            description: payment?.description ?? "Gaming laptop",
+            amount: payment?.amount ?? 1499.9,
         },
     });
 
@@ -52,13 +54,14 @@ export const AddEditPaymentModal = (props: AddEditPaymentModalProps) => {
         }
 
         /*
-            Commenting the following lines in order
-            to prevent the modal from being closed automatically.
-            This way, we can execute the same request multiple times
-            and test the idempotency functionality.
+            Using setTimeout in order to prevent the modal closing instantly.
+            This way, we can execute the same request multiple times and test
+            the idempotency functionality.
         */
-        // reset();
-        // onClose();
+        setTimeout(() => {
+            reset();
+            onClose();
+        }, 3000);
     };
 
     return (
@@ -78,18 +81,24 @@ export const AddEditPaymentModal = (props: AddEditPaymentModalProps) => {
                         id="add-payment-form"
                         onSubmit={handleSubmit(onSubmit)}
                     >
-                        <VStack spacing={4}>
-                            <FormControl>
+                        <HStack>
+                            <FormControl flex={3}>
                                 <FormLabel>Description*</FormLabel>
                                 <Input
                                     placeholder="Gaming laptop"
-                                    {...register("description", {
-                                        value:
-                                            payment?.description ?? undefined,
+                                    {...register("description")}
+                                />
+                            </FormControl>
+                            <FormControl flex={1}>
+                                <FormLabel>Amount*</FormLabel>
+                                <Input
+                                    placeholder="1499.90"
+                                    {...register("amount", {
+                                        valueAsNumber: true,
                                     })}
                                 />
                             </FormControl>
-                        </VStack>
+                        </HStack>
                     </form>
                 </ModalBody>
 
@@ -99,7 +108,7 @@ export const AddEditPaymentModal = (props: AddEditPaymentModalProps) => {
                         type="submit"
                         form="add-payment-form"
                     >
-                        {payment ? "Save Changes" : "Save New Payment"}
+                        {payment ? "Save Changes" : "Complete Purchase"}
                     </Button>
                 </ModalFooter>
             </ModalContent>
