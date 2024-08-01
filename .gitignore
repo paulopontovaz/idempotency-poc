@@ -1,4 +1,5 @@
 .DS_Store
+./server/redis/dump.rdb
 
 # Based on https://raw.githubusercontent.com/github/gitignore/main/Node.gitignore
 
