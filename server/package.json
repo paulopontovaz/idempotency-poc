@@ -1,20 +1,20 @@
 {
-  "name": "idempotency-poc",
-  "scripts": {
-    "dev": "NODE_ENV=dev bun run --hot ./index.ts",
-    "generate": "drizzle-kit generate",
-    "migrate": "drizzle-kit migrate"
-  },
-  "dependencies": {
-    "drizzle-orm": "^0.32.1",
-    "hono": "^4.5.1",
-    "pg": "^8.12.0",
-    "redis": "^4.6.15"
-  },
-  "devDependencies": {
-    "drizzle-kit": "^0.23.0"
-  },
-  "type": "module",
-  "module": "./index.ts",
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+    "name": "idempotency-poc",
+    "scripts": {
+        "dev": "NODE_ENV=dev bun run --hot ./index.ts",
+        "generate": "drizzle-kit generate",
+        "migrate": "drizzle-kit migrate"
+    },
+    "dependencies": {
+        "drizzle-orm": "^0.32.1",
+        "hono": "^4.5.1",
+        "pg": "^8.12.0",
+        "redis": "^4.6.15"
+    },
+    "devDependencies": {
+        "drizzle-kit": "^0.23.0"
+    },
+    "type": "module",
+    "module": "./index.ts",
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
