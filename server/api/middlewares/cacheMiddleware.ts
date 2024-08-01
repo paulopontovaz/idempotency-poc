@@ -2,28 +2,46 @@ import { createMiddleware } from "hono/factory";
 import { redisClient } from "../../redis/redisClient";
 
 const IDEMPOTENCY_KEY_HEADER = "Idempotency-Key";
+const LOCK_EXPIRY = 10;
+const RESPONSE_CACHE_EXPIRY = 10;
 
 export const cacheMiddleware = createMiddleware(async (c, next) => {
-    const cacheKey = c.req.header(IDEMPOTENCY_KEY_HEADER);
+    const idempotencyKey = c.req.header(IDEMPOTENCY_KEY_HEADER);
 
-    console.log("##### cacheMiddleware cacheKey:", { cacheKey });
+    if (idempotencyKey) {
+        console.log("##### cacheMiddleware cacheKey:", { idempotencyKey });
 
-    if (cacheKey) {
-        const cachedResponseString = await redisClient.GET(cacheKey);
-
-        if (cachedResponseString) {
-            const { body, status } = JSON.parse(cachedResponseString);
-            return c.json(body, status);
-        }
-    }
-
-    await next();
-
-    if (cacheKey) {
-        const response = JSON.stringify({
-            body: await c.res.json(),
-            status: c.res.status,
+        const lockAcquired = await redisClient.SET(idempotencyKey, "locked", {
+            EX: LOCK_EXPIRY,
+            NX: true,
         });
-        await redisClient.SET(cacheKey, response, { EX: 10 });
+
+        if (!lockAcquired) {
+            const cachedResponseString = await redisClient.GET(idempotencyKey);
+
+            if (cachedResponseString) {
+                const { body, status } = JSON.parse(cachedResponseString);
+                return c.json(body, status);
+            }
+
+            return c.json({ error: "Concurrent request" }, 409);
+        }
+
+        try {
+            await next();
+
+            const response = JSON.stringify({
+                body: await c.res.json(),
+                status: c.res.status,
+            });
+            await redisClient.SET(idempotencyKey, response, {
+                EX: RESPONSE_CACHE_EXPIRY,
+            });
+        } catch (error) {
+            await redisClient.DEL(idempotencyKey);
+            return c.json({ error: "Error while processing cache." }, 500);
+        }
+    } else {
+        await next();
     }
 });
