@@ -1,11 +1,11 @@
 {
-  "id": "89cec876-15c9-4477-9753-b3aba4bc3663",
+  "id": "fc2bbd60-d088-4867-abd1-1dda3830c44a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.persons": {
-      "name": "persons",
+    "public.payments": {
+      "name": "payments",
       "schema": "",
       "columns": {
         "id": {
@@ -20,11 +20,19 @@
           "primaryKey": false,
           "notNull": true
         },
-        "age": {
-          "name": "age",
-          "type": "numeric",
+        "amount": {
+          "name": "amount",
+          "type": "real",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": 0
+        },
+        "transaction_id": {
+          "name": "transaction_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "gen_random_uuid()"
         }
       },
       "indexes": {},
