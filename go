@@ -1,12 +1,46 @@
 #!/bin/zsh -f
 source ~/.zshrc
 
+setup_local() {
+    bun install
+    cd client
+    bun install
+    cd ../server
+    bun install
+    cd ..
+    docker compose stop
+    docker compose rm -f
+    docker compose up postgres redis -d
+    cd server
+    bun generate
+    bun migrate
+}
 
-run() {
+setup_and_run_docker() {
+    bun install
+    cd client
+    bun install
+    cd ../server
+    bun install
+    cd ..
     docker compose stop
     docker compose rm -f
     docker compose up -d
-    # docker compose up -d proxy
+    cd server
+    bun generate
+    bun migrate
+}
+
+run_docker() {
+    docker compose stop
+    docker compose rm -f
+    docker compose up -d
+}
+
+run_local() {
+    docker compose stop
+    docker compose rm -f
+    docker compose up postgres redis -d
 }
 
 # Get the function name from the command-line argument
