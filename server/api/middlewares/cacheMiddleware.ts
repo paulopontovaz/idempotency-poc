@@ -20,7 +20,12 @@ export const cacheMiddleware = createMiddleware(async (c, next) => {
             const cachedResponseString = await redisClient.GET(idempotencyKey);
 
             if (cachedResponseString) {
-                const { body, status } = JSON.parse(cachedResponseString);
+                const cachedResponse = JSON.parse(cachedResponseString);
+                const { body, status } = cachedResponse;
+                console.log(
+                    "##### cacheMiddleware retrieving cached response",
+                    { cachedResponse },
+                );
                 return c.json(body, status);
             }
 
@@ -34,6 +39,7 @@ export const cacheMiddleware = createMiddleware(async (c, next) => {
                 body: await c.res.json(),
                 status: c.res.status,
             });
+            console.log("##### cacheMiddleware caching response", { response });
             await redisClient.SET(idempotencyKey, response, {
                 EX: RESPONSE_CACHE_EXPIRY,
             });

@@ -33,7 +33,6 @@ paymentsRouter.post("/", async (c) => {
     try {
         const newPaymentProperties = await c.req.json();
         const newPayment = await insertPaymentService(newPaymentProperties);
-        console.log("##### paymentsRouter called POST", { newPayment });
         return c.json({ newPayment }, 201);
     } catch (error) {
         c.json({ error: "Error while inserting new payment." }, 500);
